@@ -70,28 +70,8 @@ internal static class AppState {
 
     public static void ResetCorners() => Array.Copy(DefaultCorners, Corners, Corners.Length);
 
-    public static (int Width, int Height) GetOutputSize() {
+    public static void ResetSettings() {
         
-        var width = Resolutions[ResolutionIndex];
-        var height = OutputModeIndex == 1 ? width / 2 : width;
-        
-        if (OutputModeIndex == 2) width = height / 2;
-        return (width, height);
-    }
-
-    public static (int Cols, int Rows) GetGridDimensions() =>
-        
-        OutputModeIndex switch {
-            
-            1 => (10, 5),
-            2 => (5, 10),
-            _ => (10, 10)
-        };
-
-    public static void ResetAll() {
-        
-        ResetCorners();
-
         ResolutionIndex = 4;
         OutputModeIndex = 0;
         FilterIndex = 1;
@@ -116,6 +96,30 @@ internal static class AppState {
         SeamlessX = 0f;
         SeamlessY = 0f;
         SeamWidth = 0.18f;
+    }
+
+    public static (int Width, int Height) GetOutputSize() {
+        
+        var width = Resolutions[ResolutionIndex];
+        var height = OutputModeIndex == 1 ? width / 2 : width;
+        
+        if (OutputModeIndex == 2) width = height / 2;
+        return (width, height);
+    }
+
+    public static (int Cols, int Rows) GetGridDimensions() =>
+        
+        OutputModeIndex switch {
+            
+            1 => (10, 5),
+            2 => (5, 10),
+            _ => (10, 10)
+        };
+
+    public static void ResetAll() {
+        
+        ResetCorners();
+        ResetSettings();
     }
 
     public static string GetExportExtension() => ExportFormatIndex == 1 ? "jpg" : "png";

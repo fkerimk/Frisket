@@ -165,7 +165,7 @@ internal static class Program {
         DrawPreviewView(previewRect, validQuad);
 
         rlImGui.Begin();
-        SettingsPanel.Draw(_font, layout, validQuad, outputWidth, outputHeight, AppState.ResetAll, AppState.ResetCorners, ExportCurrentImage);
+        SettingsPanel.Draw(_font, layout, validQuad, outputWidth, outputHeight, AppState.ResetAll, AppState.ResetCorners, AppState.ResetSettings, ExportCurrentImage);
         rlImGui.End();
     }
 
@@ -361,10 +361,12 @@ internal static class Program {
         DrawTexturePro(source, GeometryUtils.FullTextureRect(source), new Rectangle(0, 0, width, height), default, 0, Color.White);
         EndShaderMode();
         EndTextureMode();
+        SetTextureFilter(source, TextureFilter.Bilinear);
     }
 
     private static void DrawInputView(Rectangle inputRect, Texture2D texture) {
         
+        SetTextureFilter(texture, TextureFilter.Bilinear);
         DrawTexturePro(texture, GeometryUtils.FullTextureRect(texture), inputRect, default, 0, Color.White);
 
         var screenPoints = new Vector2[AppState.Corners.Length];

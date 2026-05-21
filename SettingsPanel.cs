@@ -41,7 +41,7 @@ internal static class SettingsPanel {
         new("Snap", "##snap", () => AppState.SnapDivisions, value => AppState.SnapDivisions = value, 2, 80, 40, 1)
     ];
 
-    public static void Draw(ImFontPtr font, AppLayout layout, bool validQuad, int outputWidth, int outputHeight, Action resetEverything, Action resetCorners, Action exportImage) {
+    public static void Draw(ImFontPtr font, AppLayout layout, bool validQuad, int outputWidth, int outputHeight, Action resetEverything, Action resetCorners, Action resetSettings, Action exportImage) {
         
         ImGui.PushFont(font);
         PushPanelColors();
@@ -57,7 +57,8 @@ internal static class SettingsPanel {
             ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, new Vector2(8, 6));
             ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, new Vector2(8, 10));
 
-            DrawActionButtons(validQuad, outputWidth, outputHeight, resetEverything, resetCorners, exportImage);
+            DrawExportButton(validQuad, outputWidth, outputHeight, exportImage);
+            DrawResetButtons(resetEverything, resetCorners, resetSettings);
             DrawSectionTitle("PREVIEW");
             DrawPreviewSettingsTable();
             ImGui.Spacing();
@@ -92,10 +93,26 @@ internal static class SettingsPanel {
         ImGui.Separator();
     }
 
-    private static void DrawActionButtons(bool validQuad, int outputWidth, int outputHeight, Action resetEverything, Action resetCorners, Action exportImage) {
+    private static void DrawResetButtons(Action resetEverything, Action resetCorners, Action resetSettings) {
         
-        if (ImGui.Button("Reset Everything", new Vector2(-1, 40))) resetEverything();
-        if (ImGui.Button("Reset Corners", new Vector2(-1, 40))) resetCorners();
+        DrawSectionTitle("RESET");
+        
+        if (ImGui.BeginTable("##reset_actions", 3, ImGuiTableFlags.SizingStretchSame)) {
+            
+            ImGui.TableNextColumn();
+            if (ImGui.Button("Corners", new Vector2(-1, 40))) resetCorners();
+            ImGui.TableNextColumn();
+            if (ImGui.Button("Effects", new Vector2(-1, 40))) resetSettings();
+            ImGui.TableNextColumn();
+            if (ImGui.Button("Everything", new Vector2(-1, 40))) resetEverything();
+            ImGui.EndTable();
+        }
+        
+        ImGui.Spacing();
+    }
+
+    private static void DrawExportButton(bool validQuad, int outputWidth, int outputHeight, Action exportImage) {
+        
         ImGui.BeginDisabled(!validQuad);
         if (ImGui.Button($"Export {AppState.ExportFormatLabels[AppState.ExportFormatIndex]}", new Vector2(-1, 40))) exportImage();
         ImGui.EndDisabled();

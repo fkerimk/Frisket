@@ -20,14 +20,21 @@ float band_mask(float coord, float width) {
 
 void main() {
     vec2 uv = fragTexCoord;
-    vec2 offset = vec2(uSeamlessX > 0.001 ? 0.5 : 0.0, uSeamlessY > 0.001 ? 0.5 : 0.0);
-    vec2 seamUv = fract(uv - offset);
     vec4 original = sample_wrap(uv);
-    vec4 opposite = sample_wrap(seamUv);
+    vec4 oppositeX = sample_wrap(vec2(uv.x - 0.5, uv.y));
+    vec4 oppositeY = sample_wrap(vec2(uv.x, uv.y - 0.5));
+    vec4 oppositeXY = sample_wrap(vec2(uv.x - 0.5, uv.y - 0.5));
 
-    float maskX = uSeamlessX > 0.001 ? band_mask(seamUv.x, max(uTexel.x * 2.0, uSeamWidth * 0.5)) * uSeamlessX : 0.0;
-    float maskY = uSeamlessY > 0.001 ? band_mask(seamUv.y, max(uTexel.y * 2.0, uSeamWidth * 0.5)) * uSeamlessY : 0.0;
-    float blend = max(maskX, maskY);
+    float maskX = uSeamlessX > 0.001 ? band_mask(fract(uv.x - 0.5), max(uTexel.x * 2.0, uSeamWidth * 0.5)) * uSeamlessX : 0.0;
+    float maskY = uSeamlessY > 0.001 ? band_mask(fract(uv.y - 0.5), max(uTexel.y * 2.0, uSeamWidth * 0.5)) * uSeamlessY : 0.0;
 
-    fc = mix(original, opposite, blend);
+    float wOriginal = (1.0 - maskX) * (1.0 - maskY);
+    float wX = maskX * (1.0 - maskY);
+    float wY = (1.0 - maskX) * maskY;
+    float wXY = maskX * maskY;
+
+    fc = original * wOriginal
+       + oppositeX * wX
+       + oppositeY * wY
+       + oppositeXY * wXY;
 }
