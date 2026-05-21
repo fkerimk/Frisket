@@ -28,9 +28,6 @@ internal static class Program {
     
     public static void Main(string[] args) {
         
-        Directory.SetCurrentDirectory(AppContext.BaseDirectory);
-        if (!File.Exists("Image.frag")) Directory.SetCurrentDirectory(Path.Combine(AppContext.BaseDirectory, "../../../"));
-        
         Initialize(args);
 
         while (!WindowShouldClose()) {
@@ -45,6 +42,16 @@ internal static class Program {
     }
 
     private static unsafe void Initialize(string[] args) {
+        
+        var startupImagePath = GetStartupImagePath(args);
+        if (startupImagePath != null) startupImagePath = Path.GetFullPath(startupImagePath);
+        
+        Console.WriteLine(startupImagePath);
+        
+        Directory.SetCurrentDirectory(AppContext.BaseDirectory);
+        if (!File.Exists("Image.frag")) Directory.SetCurrentDirectory(Path.Combine(AppContext.BaseDirectory, "../../../"));
+
+        startupImagePath ??= GetStartupImagePath(args);
         
         SetTraceLogLevel(TraceLogLevel.Error);
         SetConfigFlags(ConfigFlags.ResizableWindow | ConfigFlags.VSyncHint | ConfigFlags.Msaa4xHint);
@@ -76,7 +83,6 @@ internal static class Program {
         _checkerTexture = LoadTextureFromImage(GenImageChecked(512, 512, 32, 32, new Color(20, 20, 20, 255), new Color(40, 40, 40, 255)));
         SetTextureFilter(_checkerTexture, TextureFilter.Bilinear);
 
-        var startupImagePath = GetStartupImagePath(args);
         if (!string.IsNullOrEmpty(startupImagePath)) LoadFile(startupImagePath);
     }
 
