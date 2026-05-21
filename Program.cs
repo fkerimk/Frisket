@@ -46,8 +46,6 @@ internal static class Program {
         var startupImagePath = GetStartupImagePath(args);
         if (startupImagePath != null) startupImagePath = Path.GetFullPath(startupImagePath);
         
-        Console.WriteLine(startupImagePath);
-        
         Directory.SetCurrentDirectory(AppContext.BaseDirectory);
         if (!File.Exists("Image.frag")) Directory.SetCurrentDirectory(Path.Combine(AppContext.BaseDirectory, "../../../"));
 
