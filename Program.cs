@@ -28,6 +28,9 @@ internal static class Program {
     
     public static void Main(string[] args) {
         
+        Directory.SetCurrentDirectory(AppContext.BaseDirectory);
+        if (!File.Exists("Image.frag")) Directory.SetCurrentDirectory(Path.Combine(AppContext.BaseDirectory, "../../../"));
+        
         Initialize(args);
 
         while (!WindowShouldClose()) {
