@@ -2,6 +2,8 @@
 
 Small desktop tool for perspective cropping, creating seamless textures, and applying retro effects.
 
+<img width="774" height="480" alt="frisket" src="https://github.com/user-attachments/assets/dc9dcaf2-aaec-423b-bd46-006971fde648" />
+
 ## Run
 
 ```bash
